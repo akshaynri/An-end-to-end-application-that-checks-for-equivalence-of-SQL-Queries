@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>SQL SOLVER.</title>
+
+  </head>
+
+  <body style="background-color:white">
+
+  <h1 style="color:blue"> An Automated SQL solver that checks for Equivalence of SQL Queries.</h1>
+
+  <!-- start of the form -->
+  <form>
+  <table>
+<!--    <tr> QUERY </tr>
+    <tr>
+      <th> RESULT</th>
+    </tr> -->
+      <td>
+       <div>
+
+      <textarea  id="cosette" rows="35" cols="80"style="color:black;border:3px solid black;margin-right:10px;" >
+
+-- define schema r with attributes a and b
+   schema s(a:int, b:int);
+
+   table r(s);            -- define table r using schema s
+
+   query q1                -- define query q1
+  `select x.a as a
+   from r x`;
+
+   query q2                -- define query q2 likewise
+  `select y.a as a
+   from r y`;
+
+   verify q1 q2;           -- does q1 equal to q2?
+
+      </textarea>
+
+    </div>
+
+
+  </td>
+
+
+
+  <td>
+  <div>
+
+
+        <textarea id ="result" rows ="35" cols="50"  style="color:black;border:3px solid black;text-size:20px">
+
+      </textarea>
+
+  </div>
+</td>
+
+</table>
+
+
+        <!--submit button HTML CSS-->
+      <div class="" align="center">
+
+            <button type="button" style="background-color:green;color:white;font-size:25px;padding:10px;"onclick="myFunction()"; >Submit</button>
+
+       </div>
+
+<!-- java script to call solver.py on click of submit button -->
+      <div>
+        <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-3.3.1.min.js">  </script>
+        <script>
+        function myFunction() {
+          var query1 = document.getElementById("cosette").value;
+           $.ajax({
+             method: 'POST',
+             url: '/solve',
+             dataType: 'json',
+             data: {
+            "query": query1  ,
+              },
+       success: function(data){
+         var res=JSON.parse(data);
+         //parse the output to objects.
+         console.log(res);
+         var eq_result="<p>The Queries are Equivalent</p>";
+         var neq_result="<p>The Queries are not Equivalent</p>";
+         document.getElementById("result").innerHTML = res.result;
+        if (res.result==="EQ")//display queries are equivalent if result object returned is EQ from solver.
+                 {
+                   document.getElementById("result").innerHTML = eq_result;
+                 }
+       else if(res.result==="NEQ")//print queries are not equivalent if result is NEQ.
+                 {
+                   document.getElementById("result").innerHTML = neq_result;
+                 }
+        else if(res.result==="ERROR")//print syntax error if any.
+                 {
+                   document.getElementById("result").innerHTML = res.rosette_log;
+                 }
+
+       },
+       error: function(jqXHR, textStatus, errorThrown){
+        console.log(errorThrown);
+      }
+     });
+   };
+
+
+</script>
+</div>
+</form>
+</body>
+</html>
